@@ -101,4 +101,292 @@ defmodule TrickingBattle.Battles do
   def change_battle(%Battle{} = battle, attrs \\ %{}) do
     Battle.changeset(battle, attrs)
   end
+
+  alias TrickingBattle.Battles.Tricker
+
+  @doc """
+  Returns the list of trickers.
+
+  ## Examples
+
+      iex> list_trickers()
+      [%Tricker{}, ...]
+
+  """
+  def list_trickers do
+    Repo.all(Tricker)
+  end
+
+  @doc """
+  Gets a single tricker.
+
+  Raises `Ecto.NoResultsError` if the Tricker does not exist.
+
+  ## Examples
+
+      iex> get_tricker!(123)
+      %Tricker{}
+
+      iex> get_tricker!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_tricker!(id), do: Repo.get!(Tricker, id)
+
+  @doc """
+  Creates a tricker.
+
+  ## Examples
+
+      iex> create_tricker(%{field: value})
+      {:ok, %Tricker{}}
+
+      iex> create_tricker(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_tricker(attrs \\ %{}) do
+    %Tricker{}
+    |> Tricker.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a tricker.
+
+  ## Examples
+
+      iex> update_tricker(tricker, %{field: new_value})
+      {:ok, %Tricker{}}
+
+      iex> update_tricker(tricker, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_tricker(%Tricker{} = tricker, attrs) do
+    tricker
+    |> Tricker.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a tricker.
+
+  ## Examples
+
+      iex> delete_tricker(tricker)
+      {:ok, %Tricker{}}
+
+      iex> delete_tricker(tricker)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_tricker(%Tricker{} = tricker) do
+    Repo.delete(tricker)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking tricker changes.
+
+  ## Examples
+
+      iex> change_tricker(tricker)
+      %Ecto.Changeset{data: %Tricker{}}
+
+  """
+  def change_tricker(%Tricker{} = tricker, attrs \\ %{}) do
+    Tricker.changeset(tricker, attrs)
+  end
+
+  alias TrickingBattle.Battles.Judge
+
+  @doc """
+  Returns the list of judges.
+
+  ## Examples
+
+      iex> list_judges()
+      [%Judge{}, ...]
+
+  """
+  def list_judges do
+    Repo.all(Judge)
+  end
+
+  @doc """
+  Gets a single judge.
+
+  Raises `Ecto.NoResultsError` if the Judge does not exist.
+
+  ## Examples
+
+      iex> get_judge!(123)
+      %Judge{}
+
+      iex> get_judge!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_judge!(id), do: Repo.get!(Judge, id)
+
+  @doc """
+  Creates a judge.
+
+  ## Examples
+
+      iex> create_judge(%{field: value})
+      {:ok, %Judge{}}
+
+      iex> create_judge(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_judge(attrs \\ %{}) do
+    %Judge{}
+    |> Judge.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a judge.
+
+  ## Examples
+
+      iex> update_judge(judge, %{field: new_value})
+      {:ok, %Judge{}}
+
+      iex> update_judge(judge, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_judge(%Judge{} = judge, attrs) do
+    judge
+    |> Judge.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a judge.
+
+  ## Examples
+
+      iex> delete_judge(judge)
+      {:ok, %Judge{}}
+
+      iex> delete_judge(judge)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_judge(%Judge{} = judge) do
+    Repo.delete(judge)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking judge changes.
+
+  ## Examples
+
+      iex> change_judge(judge)
+      %Ecto.Changeset{data: %Judge{}}
+
+  """
+  def change_judge(%Judge{} = judge, attrs \\ %{}) do
+    Judge.changeset(judge, attrs)
+  end
+
+  alias TrickingBattle.Battles.BattleJudge
+
+  @doc """
+  Returns the list of battle_judges.
+
+  ## Examples
+
+      iex> list_battle_judges()
+      [%BattleJudge{}, ...]
+
+  """
+  def list_battle_judges do
+    Repo.all(BattleJudge)
+  end
+
+  @doc """
+  Gets a single battle_judge.
+
+  Raises `Ecto.NoResultsError` if the Battle judge does not exist.
+
+  ## Examples
+
+      iex> get_battle_judge!(123)
+      %BattleJudge{}
+
+      iex> get_battle_judge!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_battle_judge!(id), do: Repo.get!(BattleJudge, id)
+
+  @doc """
+  Creates a battle_judge.
+
+  ## Examples
+
+      iex> create_battle_judge(%{field: value})
+      {:ok, %BattleJudge{}}
+
+      iex> create_battle_judge(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_battle_judge(attrs \\ %{}) do
+    %BattleJudge{}
+    |> BattleJudge.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a battle_judge.
+
+  ## Examples
+
+      iex> update_battle_judge(battle_judge, %{field: new_value})
+      {:ok, %BattleJudge{}}
+
+      iex> update_battle_judge(battle_judge, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_battle_judge(%BattleJudge{} = battle_judge, attrs) do
+    battle_judge
+    |> BattleJudge.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a battle_judge.
+
+  ## Examples
+
+      iex> delete_battle_judge(battle_judge)
+      {:ok, %BattleJudge{}}
+
+      iex> delete_battle_judge(battle_judge)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_battle_judge(%BattleJudge{} = battle_judge) do
+    Repo.delete(battle_judge)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking battle_judge changes.
+
+  ## Examples
+
+      iex> change_battle_judge(battle_judge)
+      %Ecto.Changeset{data: %BattleJudge{}}
+
+  """
+  def change_battle_judge(%BattleJudge{} = battle_judge, attrs \\ %{}) do
+    BattleJudge.changeset(battle_judge, attrs)
+  end
 end
