@@ -14,7 +14,7 @@ defmodule TrickingBattle.Repo.Migrations.CreateBattle do
       timestamps()
     end
 
-    create table(:battle) do
+    create table(:battles) do
       add :tricker1_id, references(:trickers), null: false
       add :tricker2_id, references(:trickers), null: false
 
@@ -28,7 +28,7 @@ defmodule TrickingBattle.Repo.Migrations.CreateBattle do
       timestamps()
     end
 
-    create index(:battle_judges, [:battle])
-    create index(:battle_judges, [:judge])
+    create index(:battle_judges, [:battle_id])
+    create index(:battle_judges, [:judge_id])
   end
 end

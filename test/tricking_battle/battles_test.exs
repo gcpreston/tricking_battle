@@ -218,4 +218,56 @@ defmodule TrickingBattle.BattlesTest do
       assert %Ecto.Changeset{} = Battles.change_battle_judge(battle_judge)
     end
   end
+
+  describe "votes" do
+    alias TrickingBattle.Battles.Vote
+
+    import TrickingBattle.BattlesFixtures
+
+    @invalid_attrs %{}
+
+    test "list_votes/0 returns all votes" do
+      vote = vote_fixture()
+      assert Battles.list_votes() == [vote]
+    end
+
+    test "get_vote!/1 returns the vote with given id" do
+      vote = vote_fixture()
+      assert Battles.get_vote!(vote.id) == vote
+    end
+
+    test "create_vote/1 with valid data creates a vote" do
+      valid_attrs = %{}
+
+      assert {:ok, %Vote{} = vote} = Battles.create_vote(valid_attrs)
+    end
+
+    test "create_vote/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Battles.create_vote(@invalid_attrs)
+    end
+
+    test "update_vote/2 with valid data updates the vote" do
+      vote = vote_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %Vote{} = vote} = Battles.update_vote(vote, update_attrs)
+    end
+
+    test "update_vote/2 with invalid data returns error changeset" do
+      vote = vote_fixture()
+      assert {:error, %Ecto.Changeset{}} = Battles.update_vote(vote, @invalid_attrs)
+      assert vote == Battles.get_vote!(vote.id)
+    end
+
+    test "delete_vote/1 deletes the vote" do
+      vote = vote_fixture()
+      assert {:ok, %Vote{}} = Battles.delete_vote(vote)
+      assert_raise Ecto.NoResultsError, fn -> Battles.get_vote!(vote.id) end
+    end
+
+    test "change_vote/1 returns a vote changeset" do
+      vote = vote_fixture()
+      assert %Ecto.Changeset{} = Battles.change_vote(vote)
+    end
+  end
 end

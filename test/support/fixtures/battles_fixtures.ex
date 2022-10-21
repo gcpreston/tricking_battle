@@ -60,4 +60,18 @@ defmodule TrickingBattle.BattlesFixtures do
 
     battle_judge
   end
+
+  @doc """
+  Generate a vote.
+  """
+  def vote_fixture(attrs \\ %{}) do
+    {:ok, vote} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> TrickingBattle.Battles.create_vote()
+
+    vote
+  end
 end
