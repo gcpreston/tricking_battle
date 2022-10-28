@@ -48,6 +48,27 @@ defmodule TrickingBattle.Battles do
   def get_battle!(id), do: Repo.get!(Battle, id)
 
   @doc """
+  Gets a preloaded single battle.
+
+  Raises `Ecto.NoResultsError` if the Battle does not exist.
+  """
+  def get_loaded_battle!(id) do
+    query =
+      from battle in Battle,
+        join: tricker1 in assoc(battle, :tricker1),
+        join: tricker2 in assoc(battle, :tricker2),
+        join: judges in assoc(battle, :judges),
+        where: battle.id == ^id,
+        preload: [
+          tricker1: tricker1,
+          tricker2: tricker2,
+          judges: judges
+        ]
+
+    Repo.one!(query)
+  end
+
+  @doc """
   Creates a battle.
 
   ## Examples
@@ -429,10 +450,10 @@ defmodule TrickingBattle.Battles do
   # - on vote create, notify only the battle topic
 
   defp notify_subscribers({:ok, %Battle{} = result}, [:battle, _action] = event) do
-    Phoenix.PubSub.broadcast(CuberacerLive.PubSub, @topic, {__MODULE__, event, result})
+    Phoenix.PubSub.broadcast(TrickingBattle.PubSub, @topic, {__MODULE__, event, result})
 
     Phoenix.PubSub.broadcast(
-      CuberacerLive.PubSub,
+      TrickingBattle.PubSub,
       @topic <> "#{result.id}",
       {__MODULE__, event, result}
     )
@@ -444,7 +465,19 @@ defmodule TrickingBattle.Battles do
     battle_id = result.battle_id
 
     Phoenix.PubSub.broadcast(
-      CuberacerLive.PubSub,
+      TrickingBattle.PubSub,
+      @topic <> "#{battle_id}",
+      {__MODULE__, event, result}
+    )
+
+    {:ok, result}
+  end
+
+  defp notify_subscribers({:ok, %BattleJudge{} = result}, [:judge, _action] = event) do
+    battle_id = result.battle_id
+
+    Phoenix.PubSub.broadcast(
+      TrickingBattle.PubSub,
       @topic <> "#{battle_id}",
       {__MODULE__, event, result}
     )

@@ -45,7 +45,7 @@ defmodule TrickingBattleWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {TrickingBattleWeb.LayoutView, "live.html"}
+        layout: {TrickingBattleWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end
@@ -88,6 +88,7 @@ defmodule TrickingBattleWeb do
     quote do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
+      import Phoenix.Component
 
       alias Phoenix.LiveView.JS
 

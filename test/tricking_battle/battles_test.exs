@@ -20,6 +20,25 @@ defmodule TrickingBattle.BattlesTest do
       assert Battles.get_battle!(battle.id) == battle
     end
 
+    test "get_loaded_battle!/1 returns a preloaded battle with the given id" do
+      tricker1 = tricker_fixture()
+      tricker2 = tricker_fixture()
+
+      battle = battle_fixture(tricker1_id: tricker1.id, tricker2_id: tricker2.id)
+
+      judge1 = judge_fixture()
+      judge2 = judge_fixture()
+
+      battle_judge_fixture(battle_id: battle.id, judge_id: judge1.id)
+      battle_judge_fixture(battle_id: battle.id, judge_id: judge2.id)
+
+      fetched_battle = Battles.get_loaded_battle!(battle.id)
+      assert fetched_battle.id == battle.id
+      assert fetched_battle.tricker1 == tricker1
+      assert fetched_battle.tricker2 == tricker2
+      assert fetched_battle.judges == [judge1, judge2]
+    end
+
     test "create_battle/1 with valid data creates a battle" do
       valid_attrs = %{tricker1: "some tricker1", tricker2: "some tricker2"}
 
@@ -187,35 +206,17 @@ defmodule TrickingBattle.BattlesTest do
     test "create_battle_judge/1 with valid data creates a battle_judge" do
       valid_attrs = %{}
 
-      assert {:ok, %BattleJudge{} = battle_judge} = Battles.create_battle_judge(valid_attrs)
+      assert {:ok, %BattleJudge{}} = Battles.create_battle_judge(valid_attrs)
     end
 
     test "create_battle_judge/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Battles.create_battle_judge(@invalid_attrs)
     end
 
-    test "update_battle_judge/2 with valid data updates the battle_judge" do
-      battle_judge = battle_judge_fixture()
-      update_attrs = %{}
-
-      assert {:ok, %BattleJudge{} = battle_judge} = Battles.update_battle_judge(battle_judge, update_attrs)
-    end
-
-    test "update_battle_judge/2 with invalid data returns error changeset" do
-      battle_judge = battle_judge_fixture()
-      assert {:error, %Ecto.Changeset{}} = Battles.update_battle_judge(battle_judge, @invalid_attrs)
-      assert battle_judge == Battles.get_battle_judge!(battle_judge.id)
-    end
-
     test "delete_battle_judge/1 deletes the battle_judge" do
       battle_judge = battle_judge_fixture()
       assert {:ok, %BattleJudge{}} = Battles.delete_battle_judge(battle_judge)
       assert_raise Ecto.NoResultsError, fn -> Battles.get_battle_judge!(battle_judge.id) end
-    end
-
-    test "change_battle_judge/1 returns a battle_judge changeset" do
-      battle_judge = battle_judge_fixture()
-      assert %Ecto.Changeset{} = Battles.change_battle_judge(battle_judge)
     end
   end
 
@@ -239,35 +240,11 @@ defmodule TrickingBattle.BattlesTest do
     test "create_vote/1 with valid data creates a vote" do
       valid_attrs = %{}
 
-      assert {:ok, %Vote{} = vote} = Battles.create_vote(valid_attrs)
+      assert {:ok, %Vote{}} = Battles.create_vote(valid_attrs)
     end
 
     test "create_vote/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Battles.create_vote(@invalid_attrs)
-    end
-
-    test "update_vote/2 with valid data updates the vote" do
-      vote = vote_fixture()
-      update_attrs = %{}
-
-      assert {:ok, %Vote{} = vote} = Battles.update_vote(vote, update_attrs)
-    end
-
-    test "update_vote/2 with invalid data returns error changeset" do
-      vote = vote_fixture()
-      assert {:error, %Ecto.Changeset{}} = Battles.update_vote(vote, @invalid_attrs)
-      assert vote == Battles.get_vote!(vote.id)
-    end
-
-    test "delete_vote/1 deletes the vote" do
-      vote = vote_fixture()
-      assert {:ok, %Vote{}} = Battles.delete_vote(vote)
-      assert_raise Ecto.NoResultsError, fn -> Battles.get_vote!(vote.id) end
-    end
-
-    test "change_vote/1 returns a vote changeset" do
-      vote = vote_fixture()
-      assert %Ecto.Changeset{} = Battles.change_vote(vote)
     end
   end
 end
