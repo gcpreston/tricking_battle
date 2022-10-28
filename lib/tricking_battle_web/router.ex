@@ -19,7 +19,7 @@ defmodule TrickingBattleWeb.Router do
 
     get "/", PageController, :index
 
-    live "/battle/:id", BattleLive, :show
+    live "/battles/:id", BattleLive, :show
   end
 
   # Other scopes may use custom stacks.
