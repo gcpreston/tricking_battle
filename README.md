@@ -1,5 +1,13 @@
 # TrickingBattle
 
+A utility for voting in tricking battles.
+
+## Demo
+
+https://user-images.githubusercontent.com/7387903/198736861-1cf9daa0-fd31-41e2-9c33-b26c49f16c66.mov
+
+--------
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
