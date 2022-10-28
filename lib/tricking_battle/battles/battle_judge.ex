@@ -15,4 +15,6 @@ defmodule TrickingBattle.Battles.BattleJudge do
     |> cast(attrs, [:battle_id, :judge_id])
     |> validate_required([:battle_id, :judge_id])
   end
+
+  # TODO: Unique constraint on battle + judge
 end

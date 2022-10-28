@@ -8,8 +8,18 @@ defmodule TrickingBattle.Battles do
 
   alias TrickingBattle.Battles.Battle
 
+  @topic inspect(__MODULE__)
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(TrickingBattle.PubSub, @topic)
+  end
+
+  def subscribe(battle_id) do
+    Phoenix.PubSub.subscribe(TrickingBattle.PubSub, @topic <> "#{battle_id}")
+  end
+
   @doc """
-  Returns the list of battle.
+  Returns the list of battles.
 
   ## Examples
 
@@ -53,6 +63,7 @@ defmodule TrickingBattle.Battles do
     %Battle{}
     |> Battle.changeset(attrs)
     |> Repo.insert()
+    |> notify_subscribers([:battle, :created])
   end
 
   @doc """
@@ -71,6 +82,7 @@ defmodule TrickingBattle.Battles do
     battle
     |> Battle.changeset(attrs)
     |> Repo.update()
+    |> notify_subscribers([:battle, :updated])
   end
 
   @doc """
@@ -87,6 +99,7 @@ defmodule TrickingBattle.Battles do
   """
   def delete_battle(%Battle{} = battle) do
     Repo.delete(battle)
+    |> notify_subscribers([:battle, :deleted])
   end
 
   @doc """
@@ -341,24 +354,7 @@ defmodule TrickingBattle.Battles do
     %BattleJudge{}
     |> BattleJudge.changeset(attrs)
     |> Repo.insert()
-  end
-
-  @doc """
-  Updates a battle_judge.
-
-  ## Examples
-
-      iex> update_battle_judge(battle_judge, %{field: new_value})
-      {:ok, %BattleJudge{}}
-
-      iex> update_battle_judge(battle_judge, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_battle_judge(%BattleJudge{} = battle_judge, attrs) do
-    battle_judge
-    |> BattleJudge.changeset(attrs)
-    |> Repo.update()
+    |> notify_subscribers([:judge, :assigned])
   end
 
   @doc """
@@ -375,19 +371,7 @@ defmodule TrickingBattle.Battles do
   """
   def delete_battle_judge(%BattleJudge{} = battle_judge) do
     Repo.delete(battle_judge)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking battle_judge changes.
-
-  ## Examples
-
-      iex> change_battle_judge(battle_judge)
-      %Ecto.Changeset{data: %BattleJudge{}}
-
-  """
-  def change_battle_judge(%BattleJudge{} = battle_judge, attrs \\ %{}) do
-    BattleJudge.changeset(battle_judge, attrs)
+    |> notify_subscribers([:judge, :unassigned])
   end
 
   alias TrickingBattle.Battles.Vote
@@ -437,52 +421,36 @@ defmodule TrickingBattle.Battles do
     %Vote{}
     |> Vote.changeset(attrs)
     |> Repo.insert()
+    |> notify_subscribers([:vote, :created])
   end
 
-  @doc """
-  Updates a vote.
+  ## Notify subscribers
+  # - on battle create/update/delete, notify overall topic as well as battle topic
+  # - on vote create, notify only the battle topic
 
-  ## Examples
+  defp notify_subscribers({:ok, %Battle{} = result}, [:battle, _action] = event) do
+    Phoenix.PubSub.broadcast(CuberacerLive.PubSub, @topic, {__MODULE__, event, result})
 
-      iex> update_vote(vote, %{field: new_value})
-      {:ok, %Vote{}}
+    Phoenix.PubSub.broadcast(
+      CuberacerLive.PubSub,
+      @topic <> "#{result.id}",
+      {__MODULE__, event, result}
+    )
 
-      iex> update_vote(vote, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_vote(%Vote{} = vote, attrs) do
-    vote
-    |> Vote.changeset(attrs)
-    |> Repo.update()
+    {:ok, result}
   end
 
-  @doc """
-  Deletes a vote.
+  defp notify_subscribers({:ok, %Vote{} = result}, [:vote, _action] = event) do
+    battle_id = result.battle_id
 
-  ## Examples
+    Phoenix.PubSub.broadcast(
+      CuberacerLive.PubSub,
+      @topic <> "#{battle_id}",
+      {__MODULE__, event, result}
+    )
 
-      iex> delete_vote(vote)
-      {:ok, %Vote{}}
-
-      iex> delete_vote(vote)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_vote(%Vote{} = vote) do
-    Repo.delete(vote)
+    {:ok, result}
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking vote changes.
-
-  ## Examples
-
-      iex> change_vote(vote)
-      %Ecto.Changeset{data: %Vote{}}
-
-  """
-  def change_vote(%Vote{} = vote, attrs \\ %{}) do
-    Vote.changeset(vote, attrs)
-  end
+  defp notify_subscribers({:error, reason}, _event), do: {:error, reason}
 end
