@@ -16,4 +16,6 @@ defmodule TrickingBattle.Battles.Vote do
     |> cast(attrs, [:battle_id, :judge_id, :tricker_id])
     |> validate_required([:battle_id, :judge_id, :tricker_id])
   end
+
+  # TODO: Validate tricker is in battle
 end
